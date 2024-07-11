@@ -2,7 +2,7 @@ export type BudgetActions =
     {type: 'add-budget', payload: {budget: number}}
 
 
-type BudgetState = {
+export type BudgetState = {
   budget: number
 }
 

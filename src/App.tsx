@@ -1,7 +1,6 @@
 import BudgetForm from "./components/BudgetForm"
 
 function App() {
-
   return (
     <>
       <header className="bg-blue-600 py-10 max-h-72">
