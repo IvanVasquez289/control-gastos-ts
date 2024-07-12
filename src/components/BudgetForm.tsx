@@ -1,7 +1,9 @@
 import { ChangeEvent, useMemo, useState } from "react";
+import { useBudget } from "../hooks/useBudget";
 
 const BudgetForm = () => {
   const [budget, setBudget] = useState(0);
+  const {dispatch} = useBudget()
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setBudget(e.target.valueAsNumber);
@@ -11,8 +13,14 @@ const BudgetForm = () => {
     return (budget <= 0 || isNaN(budget)) ? false : true   
   }, [budget])
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    console.log(budget)
+    dispatch({type: "add-budget", payload: {budget}})
+  }
+
   return (
-    <form className="space-y-5">
+    <form onSubmit={handleSubmit} className="space-y-5">
       <div className="flex flex-col space-y-5">
         <label
           htmlFor="budget"
