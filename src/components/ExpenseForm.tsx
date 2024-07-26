@@ -10,12 +10,14 @@ import { useBudget } from "../hooks/useBudget";
 
 const ExpenseForm = () => {
 
-  const [expense, setExpense] = useState<DraftExpense>({
+  const initialState = {
     expenseName: '',
     amount: 0,
     category: '',
     date: new Date(),
-  })
+  }
+
+  const [expense, setExpense] = useState<DraftExpense>(initialState)
 
   const [error, setError] = useState('')
 
@@ -42,7 +44,9 @@ const ExpenseForm = () => {
       setError('Todos los campos son obligatorios')
       return
     }
+    
     dispatch({type: 'add-expense', payload: {draftExpense: expense}})
+    setExpense(initialState)
     setError('')
   }
 
