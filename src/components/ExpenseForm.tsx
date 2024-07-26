@@ -5,6 +5,7 @@ import 'react-calendar/dist/Calendar.css';
 import { DraftExpense, Value } from "../types";
 import { ChangeEvent, useState } from "react";
 import ErrorMessage from "./ErrorMessage";
+import { useBudget } from "../hooks/useBudget";
 
 
 const ExpenseForm = () => {
@@ -17,6 +18,8 @@ const ExpenseForm = () => {
   })
 
   const [error, setError] = useState('')
+
+  const {dispatch} = useBudget()
 
   const handleChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
     const {name, value} = e.target
@@ -39,7 +42,7 @@ const ExpenseForm = () => {
       setError('Todos los campos son obligatorios')
       return
     }
-    console.log('todo correcto')
+    dispatch({type: 'add-expense', payload: {draftExpense: expense}})
     setError('')
   }
 
