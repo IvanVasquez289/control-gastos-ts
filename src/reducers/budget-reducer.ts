@@ -6,19 +6,33 @@ export type BudgetActions =
     {type: 'show-modal'} |
     {type: 'hide-modal'} |
     {type: 'add-expense', payload: {draftExpense: DraftExpense}} |
-    {type: 'remove-expense', payload: {id: Expense['id']}}
+    {type: 'remove-expense', payload: {id: Expense['id']}} |
+    {type: 'active-expense', payload: {id: Expense['id']}} |
+    {type: 'update-expense', payload: {expense: Expense}}
 
 
 export type BudgetState = {
   budget: number
   modal: boolean
   expenses: Expense[]
+  activeExpenseId: Expense['id']
+}
+
+const localStorageBudget = () => {
+    const budget = localStorage.getItem('budget')
+    return budget ? +budget : 0
+}
+
+const localStorageExpenses = (): Expense[] => {
+    const expenses = localStorage.getItem('expenses')
+    return expenses ? JSON.parse(expenses) : []
 }
 
 export const initialState: BudgetState = {
-  budget: 0,
+  budget: localStorageBudget(),
   modal: false,
-  expenses: [],
+  expenses: localStorageExpenses(),
+  activeExpenseId: ''
 }
 
 const createExpense = (draftExpense: DraftExpense): Expense => {
@@ -47,7 +61,8 @@ export const budgetReducer = (
     if(action.type === "hide-modal"){
         return {
             ...state,
-            modal: false
+            modal: false,
+            activeExpenseId: ''
         }
     }
 
@@ -69,5 +84,28 @@ export const budgetReducer = (
         }
     }
 
+    if(action.type === "active-expense"){
+        return {
+            ...state,
+            activeExpenseId: action.payload.id,
+            modal: true
+        }
+    }
+
+    if(action.type === "update-expense"){
+        const updatedExpenses = state.expenses.map( expense => {
+            if(expense.id === action.payload.expense.id){
+                return action.payload.expense
+            }
+            return expense
+        })
+
+        return {
+            ...state,
+            expenses: updatedExpenses,
+            modal: false,
+            activeExpenseId: ''
+        }
+    }
     return state
 }

@@ -27,7 +27,7 @@ const ExpenseDetail = ({expense}: ExpenseDetailProps) => {
 
   const leadingActions = () => (
     <LeadingActions>
-      <SwipeAction onClick={() => {} }>
+      <SwipeAction onClick={() => dispatch({type: 'active-expense', payload:{id: expense.id}}) }>
         Editar
       </SwipeAction>
     </LeadingActions>

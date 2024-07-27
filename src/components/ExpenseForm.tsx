@@ -3,7 +3,7 @@ import DatePicker from 'react-date-picker';
 import 'react-date-picker/dist/DatePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import { DraftExpense, Value } from "../types";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import ErrorMessage from "./ErrorMessage";
 import { useBudget } from "../hooks/useBudget";
 
@@ -21,7 +21,15 @@ const ExpenseForm = () => {
 
   const [error, setError] = useState('')
 
-  const {dispatch} = useBudget()
+  const {dispatch, state} = useBudget()
+
+  useEffect(() => {
+    if(state.activeExpenseId) {
+      const expense = state.expenses.find((expense) => expense.id === state.activeExpenseId)
+      setExpense(expense!)
+    }
+  }, [state.activeExpenseId, state.expenses])
+  
 
   const handleChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
     const {name, value} = e.target
@@ -45,7 +53,15 @@ const ExpenseForm = () => {
       return
     }
     
-    dispatch({type: 'add-expense', payload: {draftExpense: expense}})
+    if(state.activeExpenseId){
+      dispatch({type: 'update-expense', payload: {expense: {
+        ...expense, 
+        id: state.activeExpenseId
+      }}})
+    }else{
+      dispatch({type: 'add-expense', payload: {draftExpense: expense}})
+    }
+    
     setExpense(initialState)
     setError('')
   }
@@ -53,7 +69,7 @@ const ExpenseForm = () => {
   return (
     <form className="space-y-5" onSubmit={onSubmit}>
       <legend className="text-2xl uppercase font-black text-center border-b-4 border-blue-500 py-2">
-        Nuevo gasto
+        {state.activeExpenseId ? 'Editar gasto' : 'Nuevo gasto'}
       </legend>
 
       {error && <ErrorMessage>{error}</ErrorMessage>}
@@ -125,7 +141,7 @@ const ExpenseForm = () => {
 
       <input
         type="submit"
-        value="Anadir Gasto"
+        value={state.activeExpenseId ? 'Guardar cambios' : 'Añadir gasto'}
         className="w-full rounded-md bg-blue-600 text-white p-2 uppercase font-bold cursor-pointer"
       />
     </form>
