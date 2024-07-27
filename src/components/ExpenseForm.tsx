@@ -76,7 +76,7 @@ const ExpenseForm = () => {
 
       <div className="flex flex-col gap-2">
         <label className="text-xl" htmlFor="amount">
-          Cantidad:
+          Monto:
         </label>
 
         <input
