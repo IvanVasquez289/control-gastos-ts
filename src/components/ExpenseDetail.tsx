@@ -12,37 +12,43 @@ import { formatDate } from "../helpers"
 import { Expense } from "../types"
 import AmountDisplay from "./AmountDisplay"
 import { categories } from "../data/categories"
+import { useBudget } from '../hooks/useBudget';
+
+
 
 type ExpenseDetailProps = {
     expense: Expense
 }
 
-const leadingActions = () => (
-  <LeadingActions>
-    <SwipeAction onClick={() => {} }>
-      Editar
-    </SwipeAction>
-  </LeadingActions>
-);
-
-const trailingActions = () => (
-  <TrailingActions>
-    <SwipeAction
-      onClick={() => {} }
-      destructive={true}
-    >
-      Eliminar
-    </SwipeAction>
-  </TrailingActions>
-);
 const ExpenseDetail = ({expense}: ExpenseDetailProps) => {
-
+  
   const expenseDetails = useMemo(() => categories.find(cat => cat.id === expense.category) , [expense])
+  const {dispatch} = useBudget()
 
+  const leadingActions = () => (
+    <LeadingActions>
+      <SwipeAction onClick={() => {} }>
+        Editar
+      </SwipeAction>
+    </LeadingActions>
+  );
+  
+  const trailingActions = () => (
+    
+    <TrailingActions>
+      <SwipeAction
+        onClick={() => dispatch({type: 'remove-expense', payload: {id: expense.id}}) }
+        destructive={true}
+      >
+        Eliminar
+      </SwipeAction>
+    </TrailingActions>
+  );
+  
   return (
     <SwipeableList>
       <SwipeableListItem
-        maxSwipe={30}
+        maxSwipe={1}
         leadingActions={leadingActions()}
         trailingActions={trailingActions()}
       >
