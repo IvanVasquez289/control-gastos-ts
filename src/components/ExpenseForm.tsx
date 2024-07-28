@@ -21,16 +21,21 @@ const ExpenseForm = () => {
 
   const [error, setError] = useState('')
 
-  const {dispatch, state} = useBudget()
+  const [previousAmount, setPreviousAmount] = useState(0)
+
+  const {dispatch, state, totalExpenses} = useBudget()
 
   useEffect(() => {
     if(state.activeExpenseId) {
-      const expense = state.expenses.find((expense) => expense.id === state.activeExpenseId)
-      setExpense(expense!)
+      const expenseActive = state.expenses.find((expense) => expense.id === state.activeExpenseId)
+      setPreviousAmount(expenseActive!.amount)
+      setExpense(expenseActive!)
     }
   }, [state.activeExpenseId, state.expenses])
   
 
+  const remainingBudget = state.budget - totalExpenses + previousAmount
+  
   const handleChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
     const {name, value} = e.target
     const isAmountField = ['amount'].includes(name)
@@ -50,6 +55,13 @@ const ExpenseForm = () => {
 
     if(Object.values(expense).includes('')) {
       setError('Todos los campos son obligatorios')
+      return
+    }
+
+    if( expense.amount > remainingBudget ) {
+      console.log(remainingBudget)
+      console.log(expense.amount)
+      setError('No hay suficiente presupuesto')
       return
     }
     
