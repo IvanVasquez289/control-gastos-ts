@@ -3,7 +3,7 @@ import { useBudget } from "../hooks/useBudget";
 import { CircularProgressbar , buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 const BudgetTracker = () => {
-  const {state,totalExpenses,remainingBudget} = useBudget()
+  const {state,totalExpenses,remainingBudget, dispatch} = useBudget()
   const percentage = +(totalExpenses / state.budget * 100).toFixed(2);
   return (
     <div className="grid grid-cols-1 md:grid-cols-2">
@@ -23,6 +23,7 @@ const BudgetTracker = () => {
         <button
           type="button"
           className="bg-pink-600 uppercase font-bold text-white w-full p-2 rounded-lg"
+          onClick={() => dispatch({type: "reset-app"})}
         >
           Resetear App
         </button>
