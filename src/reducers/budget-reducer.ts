@@ -1,5 +1,5 @@
 import { uuidAdapter } from "../config/uuid-adapter"
-import { DraftExpense, Expense } from "../types"
+import { Category, DraftExpense, Expense } from "../types"
 
 export type BudgetActions = 
     {type: 'add-budget', payload: {budget: number}} |
@@ -9,7 +9,8 @@ export type BudgetActions =
     {type: 'remove-expense', payload: {id: Expense['id']}} |
     {type: 'active-expense', payload: {id: Expense['id']}} |
     {type: 'update-expense', payload: {expense: Expense}} |
-    {type: 'reset-app'}
+    {type: 'reset-app'} |
+    {type: 'active-category', payload: {category: Category['id']}}
 
 
 export type BudgetState = {
@@ -17,6 +18,7 @@ export type BudgetState = {
   modal: boolean
   expenses: Expense[]
   activeExpenseId: Expense['id']
+  activeCategoryId: Category['id']
 }
 
 const localStorageBudget = () => {
@@ -33,7 +35,8 @@ export const initialState: BudgetState = {
   budget: localStorageBudget(),
   modal: false,
   expenses: localStorageExpenses(),
-  activeExpenseId: ''
+  activeExpenseId: '',
+  activeCategoryId: ''
 }
 
 const createExpense = (draftExpense: DraftExpense): Expense => {
@@ -118,6 +121,16 @@ export const budgetReducer = (
             activeExpenseId: ''
         }
     }
+
+
+    if(action.type === "active-category"){
+        return {
+            ...state,
+            activeCategoryId: action.payload.category
+        }
+    }
+
+
 
     return state
 }
